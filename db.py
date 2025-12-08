@@ -15,4 +15,4 @@ db = client[DB_NAME]
 
 expenses_collection = db["expenses"]
 
-print(f"Connected to MongoDB database: {DB_NAME}")
+# print(f"Connected to MongoDB database: {DB_NAME}")

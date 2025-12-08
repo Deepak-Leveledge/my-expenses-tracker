@@ -336,24 +336,9 @@ def categories():
     
 
 
-if __name__ == "__main__":
-    # Avoid nested asyncio.run errors when an event loop is already running
-    import asyncio
-    import threading
-
-    def _run_server():
-        mcp.run(transport="http", host="0.0.0.0", port=5000)
-
-    try:
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            # If there's an active loop (e.g., running inside an async environment),
-            # start the server in a separate thread so asyncio.run can be used safely
-            t = threading.Thread(target=_run_server, daemon=True)
-            t.start()
-            t.join()
-        else:
-            _run_server()
-    except RuntimeError:
-        # No running loop available, just run the server normally
-        _run_server()
+async def lambda_handler(event, context):
+    """
+    This is the ONLY server entrypoint for AWS Lambda.
+    It handles the MCP HTTP request WITHOUT starting any event loop.
+    """
+    return await mcp.handle_http(event)

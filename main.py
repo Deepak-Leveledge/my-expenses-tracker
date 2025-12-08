@@ -632,7 +632,7 @@ def categories():
 
 if __name__ == "__main__":
     # Simple - just run the server
-    mcp.run(transport="http", host="0.0.0.0", port=5000)
+    mcp.run(transport="http",port=5000)
 
 # # # ========================= CRITICAL FIX =========================
 # # if __name__ == "__main__":

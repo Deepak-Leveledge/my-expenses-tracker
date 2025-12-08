@@ -630,13 +630,13 @@ def categories():
         return {"status": "error", "message": str(e)}
 
 
-# ========================= CRITICAL FIX =========================
-if __name__ == "__main__":
-    # Check if running in FastMCP Cloud (AWS Lambda environment)
-    if os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
-        # Cloud mode - don't start the server
-        # FastMCP Cloud handles the server startup
-        pass
-    else:
-        # Local development mode
-        mcp.run(transport="http", host="0.0.0.0", port=5000)
+# # ========================= CRITICAL FIX =========================
+# if __name__ == "__main__":
+#     # Check if running in FastMCP Cloud (AWS Lambda environment)
+#     if os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+#         # Cloud mode - don't start the server
+#         # FastMCP Cloud handles the server startup
+#         pass
+#     else:
+#         # Local development mode
+#         mcp.run(transport="http", host="0.0.0.0", port=5000)

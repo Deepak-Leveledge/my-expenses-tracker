@@ -648,7 +648,7 @@ from bson import ObjectId
 from dotenv import load_dotenv
 from dateutil import parser
 from typing import Optional
-
+import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from mcp.server.fastmcp import FastMCP
 
@@ -880,3 +880,7 @@ def categories():
         return json.dumps(default_categories, indent=2)
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+async def main():
+    await mcp.run_async(transport="http",host="0.0.0.0", port=8000)  # no loop conflict
+asyncio.run(main())

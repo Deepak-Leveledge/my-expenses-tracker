@@ -1,0 +1,17 @@
+[project]
+name = "my-expenses-mcp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dotenv>=0.9.9",
+    "fastmcp>=2.13.3",
+    "mcp[cli]>=1.22.0",
+    "motor>=3.7.1",
+    "numpy>=2.3.5",
+    "pandas>=2.3.3",
+    "pymongo[srv]>=4.15.5",
+    "python-dateutil>=2.9.0.post0",
+    "requests>=2.32.5",
+]

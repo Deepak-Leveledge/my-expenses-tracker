@@ -1,0 +1,9 @@
+fastmcp
+requests
+numpy
+pandas
+pymongo[srv]
+dotenv
+motor
+mcp[cli]
+python-dateutil

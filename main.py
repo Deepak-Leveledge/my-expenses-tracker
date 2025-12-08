@@ -2,8 +2,6 @@ from mcp.server.fastmcp import FastMCP
 from db import expenses_collection   # ← new MongoDB file
 from bson import ObjectId
 import datetime
-
-
 import asyncio
 import threading
 import os

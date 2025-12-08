@@ -19,7 +19,6 @@
 
 
 import os
-from motor.motor_asyncio import AsyncIOMotorClient
 
 # Load environment variables
 MONGO_URL = os.getenv("MONGO_DB_URL")
@@ -36,22 +35,22 @@ if not MONGO_URL:
     except ImportError:
         raise Exception("ERROR: MONGO_DB_URL is missing in environment variables")
 
-# DON'T create client at module level - this causes asyncio errors
-# Instead, create it inside async functions
+# DON'T create client at module level!
+# Create it inside async functions instead
 
 
 async def get_expenses_collection():
     """
     Get MongoDB collection.
     Creates a new client each time - this is fine for serverless.
-    Motor handles connection pooling internally.
     """
+    from motor.motor_asyncio import AsyncIOMotorClient
     client = AsyncIOMotorClient(MONGO_URL)
     db = client[DB_NAME]
     return db["expenses"]
 
 
-# Create a proxy class that creates connection on each access
+# Proxy class that creates connection on each access
 class AsyncCollectionProxy:
     """
     Proxy that creates a fresh Motor client for each operation.
@@ -59,7 +58,6 @@ class AsyncCollectionProxy:
     """
     
     async def _get_collection(self):
-        """Helper to get collection"""
         return await get_expenses_collection()
     
     # Proxy common collection methods
@@ -67,9 +65,30 @@ class AsyncCollectionProxy:
         col = await self._get_collection()
         return await col.insert_one(*args, **kwargs)
     
-    async def find(self, *args, **kwargs):
-        col = await self._get_collection()
-        return col.find(*args, **kwargs)
+    def find(self, *args, **kwargs):
+        """
+        find() returns a cursor immediately (synchronous),
+        but the cursor operations are async
+        """
+        class FindProxy:
+            def __init__(self, filter_query, *args, **kwargs):
+                self.filter_query = filter_query
+                self.args = args
+                self.kwargs = kwargs
+                self._sort_spec = None
+            
+            def sort(self, *args, **kwargs):
+                self._sort_spec = (args, kwargs)
+                return self
+            
+            async def to_list(self, length):
+                col = await get_expenses_collection()
+                cursor = col.find(self.filter_query, *self.args, **self.kwargs)
+                if self._sort_spec:
+                    cursor = cursor.sort(*self._sort_spec[0], **self._sort_spec[1])
+                return await cursor.to_list(length)
+        
+        return FindProxy(*args, **kwargs)
     
     async def find_one(self, *args, **kwargs):
         col = await self._get_collection()
@@ -96,10 +115,7 @@ class AsyncCollectionProxy:
         return await col.count_documents(*args, **kwargs)
     
     def aggregate(self, *args, **kwargs):
-        """
-        Aggregate returns a cursor, so we need special handling.
-        This returns a wrapper that gets the collection lazily.
-        """
+        """Aggregate returns a cursor"""
         class AggregateCursor:
             def __init__(self, pipeline, *args, **kwargs):
                 self.pipeline = pipeline

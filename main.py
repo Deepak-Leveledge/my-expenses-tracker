@@ -13,7 +13,7 @@ CATEGORIES_PATH = os.path.join(os.path.dirname(__file__), "category.json")
 # Port = int(os.environ.get("PORT", 5000))
 
 # mcp = FastMCP("Expenses-tracker-mcp-server",host="0.0.0.0",port=Port)
-# mcp = FastMCP("Expenses-tracker-mcp-server")
+mcp = FastMCP("Expenses-tracker-mcp-server")
 
 
 from dateutil import parser

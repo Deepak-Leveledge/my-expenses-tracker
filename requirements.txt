@@ -7,3 +7,4 @@ dotenv
 motor
 mcp[cli]
 python-dateutil
+uvicorn==0.30.3

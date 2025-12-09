@@ -1,4 +1,6 @@
 from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
+
 
 # Create MCP instance
 mcp = FastMCP("Expenses-tracker-mcp-server")

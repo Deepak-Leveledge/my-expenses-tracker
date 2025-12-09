@@ -632,11 +632,12 @@ def categories():
 
 
 if __name__ == "__main__":
-    # Use the PORT environment variable provided by Render, default to 5000 for local testing
-    # port = int(os.environ.get("PORT", 5000))
-    # # Bind to 0.0.0.0 to make the server accessible in the container
-    # mcp.run(transport="http", port=port, host="0.0.0.0")
-    asyncio.run(mcp.run())
+    port = int(os.environ.get("PORT", 5000))
+    mcp.run(
+        transport="http",
+        host="0.0.0.0",
+        port=port
+    )
 
 
 

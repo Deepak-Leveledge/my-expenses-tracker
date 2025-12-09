@@ -10,9 +10,10 @@ from typing import Optional
 CATEGORIES_PATH = os.path.join(os.path.dirname(__file__), "category.json")
 
 
-Port = int(os.environ.get("PORT", 5000))
+# Port = int(os.environ.get("PORT", 5000))
 
-mcp = FastMCP("Expenses-tracker-mcp-server",host="0.0.0.0",port=Port)
+# mcp = FastMCP("Expenses-tracker-mcp-server",host="0.0.0.0",port=Port)
+mcp = FastMCP("Expenses-tracker-mcp-server")
 
 
 from dateutil import parser
@@ -630,11 +631,11 @@ def categories():
         return {"status": "error", "message": str(e)}
 
 
-# if __name__ == "__main__":
-#     # Use the PORT environment variable provided by Render, default to 5000 for local testing
-#     port = int(os.environ.get("PORT", 5000))
-#     # Bind to 0.0.0.0 to make the server accessible in the container
-#     mcp.run(transport="http", port=port, host="0.0.0.0")
+if __name__ == "__main__":
+    # Use the PORT environment variable provided by Render, default to 5000 for local testing
+    port = int(os.environ.get("PORT", 5000))
+    # Bind to 0.0.0.0 to make the server accessible in the container
+    mcp.run(transport="http", port=port, host="0.0.0.0")
 
 
 

@@ -636,7 +636,8 @@ if __name__ == "__main__":
     # port = int(os.environ.get("PORT", 5000))
     # # Bind to 0.0.0.0 to make the server accessible in the container
     # mcp.run(transport="http", port=port, host="0.0.0.0")
-    mcp.run()
+    asyncio.run(mcp.run())
+
 
 
 

@@ -7,4 +7,3 @@ dotenv
 motor
 mcp[cli]
 python-dateutil
-uvicorn

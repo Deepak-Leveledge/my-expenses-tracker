@@ -14,12 +14,12 @@ from dateutil import parser
 # Port = int(os.environ.get("PORT", 5000))
 
 # mcp = FastMCP("Expenses-tracker-mcp-server",host="0.0.0.0",port=Port)
-port = int(os.environ.get("PORT", 8000))
+# port = int(os.environ.get("PORT", 8000))
 
 mcp = FastMCP(
         "Expenses-tracker-mcp-server",
         host="0.0.0.0",
-        port=port
+        port=8000
     )
 
 

@@ -7,3 +7,4 @@ dotenv
 motor
 mcp[cli]
 python-dateutil
+fastapi

@@ -3,6 +3,8 @@ from db import expenses_collection   # ← new MongoDB file
 from bson import ObjectId
 import datetime
 import asyncio
+from fastapi import FastAPI
+
 import threading
 import os
 from dateutil import parser
@@ -11,16 +13,33 @@ CATEGORIES_PATH = os.path.join(os.path.dirname(__file__), "category.json")
 from dateutil import parser
 
 
-# Port = int(os.environ.get("PORT", 5000))
+# ---------------------------------------
+#  MCP SERVER INIT (Old FastMCP version)
+# ---------------------------------------
+mcp = FastMCP("Expenses-tracker-mcp-server")
 
-# mcp = FastMCP("Expenses-tracker-mcp-server",host="0.0.0.0",port=Port)
-# port = int(os.environ.get("PORT", 8000))
 
-mcp = FastMCP(
-        "Expenses-tracker-mcp-server",
-        host="0.0.0.0",
-        port=8000
-    )
+# ---------------------------------------
+#  FASTAPI ROOT ENDPOINT (Fixes 404)
+# ---------------------------------------
+http_app = FastAPI()
+
+@http_app.get("/")
+def root():
+    return {
+        "status": "MCP server running",
+        "server": "Expenses-tracker-mcp-server",
+        "tools": list(mcp.tools.keys())
+    }
+
+# Attach FastAPI app to MCP server
+mcp.http_app = lambda: http_app
+
+# mcp = FastMCP(
+#         "Expenses-tracker-mcp-server",
+#         host="0.0.0.0",
+#         port=8000
+#     )
 
 
 def convert_date(date_str: str):
@@ -340,8 +359,16 @@ def categories():
     
 
 
+# if __name__ == "__main__":
+#     mcp.run(transport="streamable-http")
+
+
+# ---------------------------------------
+#  RUN SERVER (Production)
+# ---------------------------------------
 if __name__ == "__main__":
-    mcp.run(transport="streamable-http")
+    port = int(os.environ.get("PORT", 8000))
+    mcp.run_http(host="0.0.0.0", port=port)
 
 
 

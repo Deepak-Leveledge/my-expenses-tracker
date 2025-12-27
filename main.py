@@ -12,11 +12,15 @@ from dateutil import parser
 
 
 
+# mcp = FastMCP(
+#         "Expenses-tracker-mcp-server",
+#         host="0.0.0.0",
+#         port=8000
+#     )
+
 mcp = FastMCP(
-        "Expenses-tracker-mcp-server",
-        host="0.0.0.0",
-        port=8000
-    )
+        "Expenses-tracker-mcp-server")
+
 
 
 def convert_date(date_str: str):
@@ -336,10 +340,13 @@ def categories():
     
 
 
+# if __name__ == "__main__":
+#     mcp.run(transport="streamable-http")
+
+
+
+
+
+
 if __name__ == "__main__":
-    mcp.run(transport="streamable-http")
-
-
-
-
-
+    mcp.run()

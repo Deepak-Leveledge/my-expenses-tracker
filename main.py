@@ -348,5 +348,5 @@ def categories():
 
 
 
-if __name__ == "__main__":
-    mcp.run()
+# if __name__ == "__main__":
+#     mcp.run()

@@ -12,14 +12,14 @@ from dateutil import parser
 
 
 
-# mcp = FastMCP(
-#         "Expenses-tracker-mcp-server",
-#         host="0.0.0.0",
-#         port=8000
-#     )
-
+# Initialize FastMCP with correct configuration for cloud deployment
 mcp = FastMCP(
-        "Expenses-tracker-mcp-server")
+    "Expenses-tracker-mcp-server",
+    host="0.0.0.0",
+    port=8080  # FastMCP Cloud expects port 8080
+)
+# mcp = FastMCP(
+#         "Expenses-tracker-mcp-server")
 
 
 
@@ -339,12 +339,10 @@ def categories():
         return {"status": "error", "message": str(e)}
     
 
-
-# if __name__ == "__main__":
-#     mcp.run(transport="streamable-http")
-
-
-
+# ------------------------- RUN SERVER -------------------------
+if __name__ == "__main__":
+    # Use streamable-http transport for FastMCP Cloud
+    mcp.run(transport="streamable-http")
 
 
 

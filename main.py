@@ -350,8 +350,6 @@
 # #     mcp.run()
 
 
-
-
 import os
 import json
 import datetime
@@ -371,17 +369,23 @@ except ImportError as e:
     logger.error(f"Failed to import FastMCP: {e}")
     raise
 
-# Initialize FastMCP first
-mcp = FastMCP("Expenses-tracker-mcp-server")
-logger.info("FastMCP initialized")
+# Get port from environment (Render sets this automatically)
+PORT = int(os.getenv("PORT", 8080))
 
-# Then import database connection
+# Initialize FastMCP with Render configuration
+mcp = FastMCP(
+    "Expenses-tracker-mcp-server",
+    host="0.0.0.0",
+    port=PORT
+)
+logger.info(f"FastMCP initialized on port {PORT}")
+
+# Import database connection
 try:
     from db import expenses_collection
     logger.info("Database connection imported successfully")
 except ImportError as e:
     logger.error(f"Failed to import database: {e}")
-    # Create a dummy collection for inspection to work
     expenses_collection = None
 
 CATEGORIES_PATH = os.path.join(os.path.dirname(__file__), "category.json")
@@ -393,6 +397,16 @@ def convert_date(date_str: str):
         return dt.strftime("%Y-%m-%d")
     except Exception:
         raise ValueError(f"Invalid date format: {date_str}")
+
+# ------------------------- HEALTH CHECK -------------------------
+@mcp.resource("health:///status")
+def health_check():
+    """Health check endpoint for Render"""
+    return json.dumps({
+        "status": "healthy",
+        "service": "expenses-tracker-mcp",
+        "database": "connected" if expenses_collection is not None else "disconnected"
+    })
 
 # ------------------------- ADD EXPENSE -------------------------
 @mcp.tool()
@@ -575,12 +589,7 @@ async def update_expense(
     new_note: Optional[str] = None,
     new_payment_method: Optional[str] = None
 ):
-    """Update an expense by finding it with current values and updating to new values.
-    
-    Args:
-        date, amount, category, etc.: Current values to find the expense
-        new_date, new_amount, new_category, etc.: New values to update to
-    """
+    """Update an expense by finding it with current values and updating to new values."""
     if expenses_collection is None:
         return {"status": "error", "message": "Database not connected"}
     
@@ -686,11 +695,7 @@ async def delete_expense(
     category: Optional[str] = None,
     note: Optional[str] = None
 ):
-    """Delete an expense by finding it with the provided criteria.
-    
-    Args:
-        date, amount, category, note: Fields to identify the expense to delete
-    """
+    """Delete an expense by finding it with the provided criteria."""
     if expenses_collection is None:
         return {"status": "error", "message": "Database not connected"}
     
@@ -795,7 +800,7 @@ def categories():
 
 # ------------------------- RUN SERVER -------------------------
 if __name__ == "__main__":
-    logger.info("Starting MCP server...")
+    logger.info(f"Starting MCP server on port {PORT}...")
     try:
         mcp.run(transport="streamable-http")
     except Exception as e:
